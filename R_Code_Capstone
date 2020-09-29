@@ -12,6 +12,7 @@ MIS581 - Capstone - Business Intelligence and Data Analytics
 #Libraries
   # the following packages and libraries have been installed and loaded
   # arules, arulesViz, rpart, rpart.plot, caret, gains, glm2, tidyverse
+  
 install.packages("arulesViz")
 library(arulesViz)
 install.packages("rpart")
