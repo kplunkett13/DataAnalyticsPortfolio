@@ -1,0 +1,138 @@
+
+*****************************************************************************************************************************
+*****************************************************************************************************************************
+
+MIS581 - Capstone - Business Intelligence and Data Analytics
+
+*****************************************************************************************************************************
+*****************************************************************************************************************************
+
+/* R Code */
+
+#Libraries
+  # the following packages and libraries have been installed and loaded
+  # arules, arulesViz, rpart, rpart.plot, caret, gains, glm2, tidyverse
+install.packages("arulesViz")
+library(arulesViz)
+install.packages("rpart")
+library(rpart)
+install.packages("rpart.plot")
+library(rpart.plot)
+install.packages("caret")
+library(caret)
+install.packages("gains")
+library(gains)
+install.packages("glm2")
+library(glm2) 
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("Rcmdr")
+library("Rcmdr") #this looks REALLY COOL
+install.packages("lattice")
+library("Lattice") ### this doesn't seem to exist, but the previous installed fine...??
+install.packages("plot3D")
+library("plot3D")
+install.packages("mosaic")
+library(mosaic)
+  
+#Datasets: 
+MIS581UnitsDeathsByState08172020.csv
+
+
+setwd("/Users/NerdySquirrel/CapstoneResearchProject") #set the working directory
+getwd() #returns working directory
+
+# Import and load all datasets into R, set dataframes
+dat = read.csv ("MIS581UnitsDeathsByState08172020.csv", header = TRUE) #imports the csv data into R
+mis581data <- read.csv(file="MIS581UnitsDeathsByState08172020.csv", header=TRUE, sep=",") #Creates a DataFrame called mis581data
+
+
+# All the different subsets of data - all kinds of practice
+
+dim(mis581data.df) #this will give us the dimension of the data frame
+head(mis581data.df) #this will give us the first six rows 
+View(mis581data.df) #this will show all the data in a new tab
+
+mis581data[1:10, 1] #gives the first ten rows of the first column onlya
+mis581data[1:10, ] #gives the first 10 rows of each of the columns
+mis581data[5, 1:10] #gives the fifth row of the first 10 columns
+mis581data[5, c(1:2, 4, 8:10)] #gives the fifth row of some columns
+mis581data[, 1] #gives the whole first column
+mis581data$TOTAL_VALUE #another way to show the entire first column
+mis581data$TOTAL_VALUE[1:10] #shows the first 10 rows of the first column
+length(mis581data$TOTAL_VALUE) #this will give the length of the first column
+mean(mis581data$TOTAL_VALUE) #finds the mean of the first column
+summary(mis581data) #finds the summary statistics for each column
+
+##  Hypothesis Testing Tool - (T-test)
+t.test(mis581data$CDC_Deaths)
+t.test(mis581data$HP_Total_Units)
+
+t.test(x, y = NULL,
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95, ...)
+	   
+##  Plotting	   
+	   
+x <- mis581data$CDC_deaths
+y <- mis581data$HP_TotalUnits
+# Plot with main and axis titles
+# Change point shape (pch = 19) and remove frame.
+plot(x, y, main = "CDC - 65+ Deaths",
+     xlab = "Deaths", ylab = "State",
+     pch = 19, frame = FALSE)
+# Add regression line
+plot(x, y, main = "CDC - 65+ Deaths",
+     xlab = "Temperature", ylab = "Year",
+     pch = 19, frame = FALSE)
+abline(lm(y ~ x, data = mis581data), col = "blue")
+
+
+x<-c(mis581data$CDC_Deaths)
+y<-c(mis581data$HP_TotalUnits)
+
+plot(x,y)
+
+plot(mis581data$dt, mis581data$CDC_Deaths, type="p", pch=20, col="blue", cex.axis=.75,  
+     main="CDC - 65+ Deaths",xlab="Date",ylab="Temperature")
+	 with(dd, plot(dt, temperature, xaxt="n"))
+axis.Date(1, at=seq(min(dd$dt), max(dd$CDC_Deaths), by="30 mon"), format="%m-%Y")
+
+abline(lm(y ~ x, data = mis581data), col = "blue")
+x<-c(mis581data$CDC_Deaths)
+y<-c(mis581data$HP_TotalUnits)
+
+plot(x,y)
+
+##	Scatterplot
+
+dat = read.csv ("MIS581UnitsDeathsByState08172020.csv", header = TRUE) #imports the csv data into R
+mis581data <- read.csv(file="MIS581UnitsDeathsByState08172020.csv", header=TRUE, sep=",") #Creates a DataFrame called mis581data
+# x, y and z coordinates
+x <- sep.l <- MIS581DeathsUnits$State
+y <- pet.l <- MIS581DeathsUnits$HP_TotalUnits
+z <- sep.w <- MIS581DeathsUnits$CDC_Deaths
+
+# Scatter Plot
+scatter3D(x, y, z, ..., colvar = z, col = NULL, add = FALSE)
+text3D(x, y, z, labels, colvar = NULL, add = FALSE)
+points3D(x, y, z, ...)
+lines3D(x, y, z, ...)
+scatter2D(x, y, colvar = NULL, col = NULL, add = FALSE)
+text2D(x, y, labels, colvar = NULL, col = NULL, add = FALSE)
+
+
+scatter3D(x, y, z, clab = c("MIS581DeathsUnits", "CDC_Deaths"))
+scatter2D(x, y, z, clab = c("MIS581DeathsUnits", "HP_TotalUnits"))
+
+plot(MIS581DeathsUnits)
+# website for reference https://flowingdata.com/2012/12/17/getting-started-with-charts-in-r/
+
+
+
+
+
+
+
+
