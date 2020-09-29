@@ -1,0 +1,146 @@
+
+
+*******************************************************************************************
+*******************************************************************************************
+
+/* MIS581 - Capstone: Business Intelligence and Data Analytics */
+
+*******************************************************************************************
+*******************************************************************************************
+
+/* SAS Code */   (Multiple Regression and Pearson r)
+
+/* Datasets */
+
+/* Binary Variables - Transformed units and deaths to binary for analysis */
+proc import datfile = '/folders/myfolders/sasuser.v94/MIS581BinaryVariables.csv'
+out = datalib.mis581_Binary
+dbms = CSV;
+run;
+
+/* HP_SeniorHousingProperties.csv - HP Properties Data, Mainly Categorical */
+proc import datfile = '/folders/myfolders/sasuser.v94/HP_SeniorHousingProperties.csv'
+out = datalib.mis581_HPProperties
+dbms = CSV;
+run;
+
+/* MIS581_CDC08172020.csv - CDC Data up till 08/08/2020 */
+proc import datfile = '/folders/myfolders/sasuser.v94/MIS581_CDC08172020.csv'
+out = datalib.MIS581_CDC08172020
+dbms = CSV;
+run;
+/* MIS581UnitsDeathsByState08172020.csv - CDC Deaths and HP Units */ 
+proc import datfile = '/folders/myfolders/sasuser.v94/MIS581UnitsDeathsbyState08172020.csv'
+out = datalib.MIS581_08172020
+dbms = CSV;
+run;
+
+/* proc means */
+proc means data=datalib.MIS581_08172020;
+run;
+proc means data=datalib.MIS581_cdc08172020;
+run;
+proc means data=datalib.MIS581_HPProperties;
+run;
+
+/* Proc Corr */
+title 'Correlation Matrix - Deaths-Units Per State';
+proc corr data=datalib.MIS581_08172020;
+VAR State_ID HP_TotalUnits CDC_Deaths;
+run;
+
+
+/* proc univariate */
+PROC UNIVARIATE DATA=datalib.MIS581_08172020;
+HISTOGRAM CDC_DEATHS/NORMAL (COLOR=BLACK W=5) NROWS=10;
+run;
+
+/* proc fremquency */
+PROC FREQ DATA=datalib.MIS581_08172020;
+  TABLES State_ID CDC_DEATHS HP_TotalUnits ;
+RUN; 
+
+/* hypotheses testing - t-test */
+proc ttest data = datalib.MIS581_08172020 h0 = 50;
+  var cdc_deaths;
+run;
+
+proc ttest data = datalib.MIS581_08172020 h0 = 50;
+  var HP_TotalUnits;
+run;
+
+proc ttest data = datalib.MIS581_08172020 h0 = 50;
+  var state_id;
+run;
+
+/* Paired T-test (Dependent group t-test) */
+PROC TTEST DATA=datalib.mis581_08172020 ALPHA=.05;
+PAIRED cdc_deaths*HP_TotalUnits;
+TITLE'PAIRED T-TEST - Total Units/Deaths';
+RUN;
+
+/* Proc sgplot */  DATA VISUALIZATION  /* <<<Need to Improve this, restrict to Top 10>>> */
+ods graphics on / width=11in;
+ods graphics on / height=6in;
+title "HP Units/CDC Covid Deaths";
+proc sgplot data=datalib.mis581_08172020;
+  xaxis type=discrete;
+  series x=state y=HP_TotalUnits / datalabel;
+  series x=state y=CDC_Deaths / 
+      datalabel y2axis;
+run;
+title;
+
+/* Logistic Regression Test */
+proc logistic data=datalib.mis581_08172020;
+  model State = CDC_Deaths HP_TotalUnits / expb;
+run;
+
+
+/* Regression Model */
+proc reg data=datalib.mis581_08172020;
+  model State_ID = CDC_Deaths HP_TotalUnits / clb;
+run;
+quit;
+
+/* ANOVA - General Linear Model - Proc GLM */
+proc glm data=datalib.MIS581_08172020;
+ class state;
+ model  HP_TotalUnits = cdc_deaths/ss3;
+run; quit;
+
+proc glm data=datalib.MIS581_08172020;
+ class state;
+ model  cdc_deaths = hp_totalunits /ss3;
+run; quit;
+
+
+/* Hypothesis Testing with Binary Variables */
+
+/* Regression Model */
+proc reg data=datalib.mis581_binary;
+  model State_ID = binCDC_Deaths HP_TotalUnits / clb;
+run;
+quit;
+
+/* Logistic Regression */
+proc logistic data=datalib.mis581_binary;
+  model State = binCDC_Deaths binHP_TotalUnits / expb;
+run;
+
+/*ANOVA - General linear Model */
+proc glm data=datalib.MIS581_binary;
+ class state_id;
+ model  bincdc_deaths = binhp_totalunits /ss3;
+run; quit;
+
+
+proc glm data=datalib.MIS581_08172020;
+ model  state_id = HP_TotalUnits cdc_deaths/ solution;
+ ods select ParameterEstimates ContourFit;
+run; 
+quit;
+
+
+
+
